@@ -1,0 +1,34 @@
+Function Knapsack(n, W, weight[1..n], value[1..n]):
+
+    Create a 2D dp[0..n][0..W]
+
+    // Step 1: Initialize base cases
+    for i = 0 to n:
+        for w = 0 to W:
+            if i == 0 or w == 0:
+                dp[i][w] = 0
+
+    // Step 2: Fill the dp table
+    for i = 1 to n:
+        for w = 1 to W:
+            if weight[i] <= w:
+                dp[i][w] = max(
+                    value[i] + dp[i-1][w - weight[i]],  // include item i
+                    dp[i-1][w]                          // exclude item i
+                )
+            else:
+                dp[i][w] = dp[i-1][w]  // can't take item i
+
+    // Step 3: Backtrack to find the weights/items included
+    selected_items = empty list
+    i = n
+    w = W
+    while i > 0 and w > 0:
+        if dp[i][w] != dp[i-1][w]:  // item i was taken
+            add weight[i] to selected_items
+            w = w - weight[i]
+            i = i - 1
+        else:
+            i = i - 1
+
+    return dp[n][W], selected_items
